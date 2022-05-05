@@ -1,6 +1,7 @@
-import type { NextPage } from 'next'
 import Link from 'next/link'
 import { getAllPosts } from '../lib/api'
+
+import type { NextPage } from 'next'
 import type Post from '../types/post'
 
 type Props = {
