@@ -1,38 +1,19 @@
-import Link from 'next/link'
-import { getAllPosts } from '../lib/api'
-
 import type { NextPage } from 'next'
-import type Post from '../types/post'
+import Link from 'next/link'
 
-type Props = {
-  allPosts: Post[]
-}
-
-const Home: NextPage<Props> = ({ allPosts }) => {
+const Home: NextPage = () => {
   return (
     <div>
-      <h1>Posts</h1>
-      <ul>
-        {allPosts.map((post) => (
-          <li key={post.slug}>
-            <h3>{post.title}</h3>
-            <Link href="/posts/[slug]" as={`/posts/${post.slug}`}>
-              <a>Click here</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <h1>Home</h1>
+      <Link href="/posts">
+        <a>Posts</a>
+      </Link>
+      <br />
+      <Link href="/snippets">
+        <a>Snippets</a>
+      </Link>
     </div>
   )
-}
-
-export const getStaticProps = async () => {
-  const allPosts = getAllPosts()
-  return {
-    props: {
-      allPosts,
-    },
-  }
 }
 
 export default Home
