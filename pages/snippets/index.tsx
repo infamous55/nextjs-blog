@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { getAllSnippets } from '../../lib//api'
+import { getAllSnippets } from '../../lib/api'
+import Layout from '../../components/layout'
 
 import type { NextPage } from 'next'
 import Snippet from '../../types/snippet'
@@ -10,19 +11,18 @@ type Props = {
 
 const Posts: NextPage<Props> = ({ allSnippets }) => {
   return (
-    <div>
-      <h1>Posts</h1>
+    <Layout>
+      <h1 className="text-xl">Posts</h1>
       <ul>
         {allSnippets.map((snippet) => (
           <li key={snippet.slug}>
-            <h3>{snippet.title}</h3>
             <Link href="/snippets/[slug]" as={`/snippets/${snippet.slug}`}>
-              <a>Click here</a>
+              <a>{snippet.title}</a>
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+    </Layout>
   )
 }
 

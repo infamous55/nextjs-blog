@@ -1,20 +1,10 @@
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
 
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import {
-//   IconLookup,
-//   IconDefinition,
-//   findIconDefinition,
-// } from '@fortawesome/fontawesome-svg-core'
-
-// const twitterLookup: IconLookup = { prefix: 'far', iconName: 'twitter' }
-// const twitterIconDefinition: IconDefinition = findIconDefinition(twitterLookup)
-
 const Navbar: FunctionComponent = () => {
   return (
-    <nav className="flex justify-center items-center md:justify-between text-gray-300 h-16">
-      <ul className="list-none flex space-x-5 text-lg">
+    <nav className="flex justify-center items-center md:justify-between h-16 text-gray-300">
+      <ul className="list-none flex space-x-5">
         <li>
           <Link href="/">
             <a className="hover:text-white">Home</a>
@@ -31,9 +21,7 @@ const Navbar: FunctionComponent = () => {
           </Link>
         </li>
       </ul>
-      {/* <div>
-        <FontAwesomeIcon icon={twitterIconDefinition} />
-      </div> */}
+      {/* icons */}
     </nav>
   )
 }

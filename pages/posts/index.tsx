@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { getAllPosts } from '../../lib//api'
+import { getAllPosts } from '../../lib/api'
+import Layout from '../../components/layout'
 
 import type { NextPage } from 'next'
 import type Post from '../../types/post'
@@ -10,19 +11,18 @@ type Props = {
 
 const Posts: NextPage<Props> = ({ allPosts }) => {
   return (
-    <div>
-      <h1>Posts</h1>
+    <Layout>
+      <h1 className="text-xl">Posts</h1>
       <ul>
         {allPosts.map((post) => (
           <li key={post.slug}>
-            <h3>{post.title}</h3>
             <Link href="/posts/[slug]" as={`/posts/${post.slug}`}>
-              <a>Click here</a>
+              <a>{post.title}</a>
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+    </Layout>
   )
 }
 
