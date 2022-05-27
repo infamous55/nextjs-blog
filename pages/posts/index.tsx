@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { getAllPosts } from '../../lib/api'
 import Layout from '../../components/layout'
+import Card from '../../components/card'
 
 import type { NextPage } from 'next'
 import type Post from '../../types/post'
@@ -12,16 +12,15 @@ type Props = {
 const Posts: NextPage<Props> = ({ allPosts }) => {
   return (
     <Layout>
-      <h1 className="text-xl">Posts</h1>
-      <ul>
+      {/* margin not working in tailwind */}
+      <div className="px-8 md:px-0" style={{ margin: '4rem 0' }}>
+        <h1 className="text-4xl mb-8 font-bold text-center md:text-left">
+          Posts
+        </h1>
         {allPosts.map((post) => (
-          <li key={post.slug}>
-            <Link href="/posts/[slug]" as={`/posts/${post.slug}`}>
-              <a>{post.title}</a>
-            </Link>
-          </li>
+          <Card post={post} key={post.slug} />
         ))}
-      </ul>
+      </div>
     </Layout>
   )
 }
