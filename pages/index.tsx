@@ -1,12 +1,20 @@
-import type { NextPage } from 'next'
 import Link from 'next/link'
 import Layout from '../components/layout'
 import Image from 'next/image'
+import Card from '../components/card'
+import { getAllPosts } from '../lib/api'
+
+import type { NextPage } from 'next'
+import type Post from '../types/post'
 
 import profile from '../public/profile.svg'
 // import arrow from '../public/arrow.svg'
 
-const Home: NextPage = () => {
+type Props = {
+  posts: Post[]
+}
+
+const Home: NextPage<Props> = ({ posts }) => {
   return (
     <Layout>
       <section className="py-12 px-8 md:px-0 flex justify-center md:items-center md:justify-between">
@@ -23,6 +31,14 @@ const Home: NextPage = () => {
         <div className="hidden	md:block">
           <Image src={profile} width={160} height={160}></Image>
         </div>
+      </section>
+      <section className="px-8 md:px-0">
+        <h3 className="text-4xl mb-8 font-bold text-center md:text-left">
+          Latest Posts
+        </h3>
+        {posts.map((post) => (
+          <Card post={post} key={post.slug} />
+        ))}
       </section>
       <section className="py-12 px-8 md:px-0 text-center md:text-left">
         <h3 className="text-4xl mb-4 font-bold">Snippets</h3>
@@ -42,6 +58,15 @@ const Home: NextPage = () => {
       </section>
     </Layout>
   )
+}
+
+export const getStaticProps = async () => {
+  const posts = getAllPosts().slice(0, 3)
+  return {
+    props: {
+      posts,
+    },
+  }
 }
 
 export default Home
