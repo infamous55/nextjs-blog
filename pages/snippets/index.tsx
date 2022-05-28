@@ -1,27 +1,27 @@
-import Link from 'next/link'
 import { getAllSnippets } from '../../lib/api'
 import Layout from '../../components/layout'
+import SnippetCard from '../../components/snippetCard'
 
 import type { NextPage } from 'next'
-import Snippet from '../../types/snippet'
+import type Snippet from '../../types/snippet'
 
 type Props = {
   allSnippets: Snippet[]
 }
 
-const Posts: NextPage<Props> = ({ allSnippets }) => {
+const Snippets: NextPage<Props> = ({ allSnippets }) => {
   return (
     <Layout>
-      <h1 className="text-xl">Posts</h1>
-      <ul>
-        {allSnippets.map((snippet) => (
-          <li key={snippet.slug}>
-            <Link href="/snippets/[slug]" as={`/snippets/${snippet.slug}`}>
-              <a>{snippet.title}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="px-8 md:px-0" style={{ margin: '4rem 0' }}>
+        <h1 className="text-4xl mb-8 font-bold text-center md:text-left">
+          Snippets
+        </h1>
+        <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:grid-flow-row lg:auto-rows-fr">
+          {allSnippets.map((snippet) => (
+            <SnippetCard snippet={snippet} key={snippet.slug} />
+          ))}
+        </div>
+      </div>
     </Layout>
   )
 }
@@ -35,4 +35,4 @@ export const getStaticProps = async () => {
   }
 }
 
-export default Posts
+export default Snippets

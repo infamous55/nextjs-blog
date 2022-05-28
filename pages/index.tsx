@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Layout from '../components/layout'
 import Image from 'next/image'
-import Card from '../components/card'
+import PostCard from '../components/postCard'
 import { getAllPosts } from '../lib/api'
 
 import type { NextPage } from 'next'
@@ -37,7 +37,7 @@ const Home: NextPage<Props> = ({ posts }) => {
           Latest Posts
         </h3>
         {posts.map((post) => (
-          <Card post={post} key={post.slug} />
+          <PostCard post={post} key={post.slug} />
         ))}
       </section>
       <section className="py-12 px-8 md:px-0 text-center md:text-left">

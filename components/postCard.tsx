@@ -1,12 +1,13 @@
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
+
 import type Post from '../types/post'
 
 type Props = {
   post: Post
 }
 
-const Card: FunctionComponent<Props> = ({ post }) => {
+const PostCard: FunctionComponent<Props> = ({ post }) => {
   return (
     <Link href="/posts/[slug]" as={`/posts/${post.slug}`}>
       <div className="p-8 bg-gray-800 rounded-lg mb-8 last:mb-0 cursor-pointer min-h-[11rem] flex flex-col justify-center">
@@ -14,7 +15,7 @@ const Card: FunctionComponent<Props> = ({ post }) => {
           {post.title}
         </h3>
         <p className="mb-2 text-center md:text-left">{post.excerpt}</p>
-        <p className="italic font-light text-center md:text-right">
+        <p className="italic font-light text-center md:text-right text-gray-300">
           {post.date}
         </p>
       </div>
@@ -22,4 +23,4 @@ const Card: FunctionComponent<Props> = ({ post }) => {
   )
 }
 
-export default Card
+export default PostCard
