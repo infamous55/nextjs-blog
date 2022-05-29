@@ -5,9 +5,10 @@ import rehypeHighlight from 'rehype-highlight'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import Head from 'next/head'
+import Layout from '../../components/layout'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
-import 'highlight.js/styles/tokyo-night-dark.css'
+import 'highlight.js/styles/night-owl.css'
 
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 
@@ -30,8 +31,19 @@ const PostPage: NextPage<{ post: MDXPost }> = ({ post }) => {
           href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
         />
       </Head>
-      <h1>{post.meta.title}</h1>
-      <MDXRemote {...post.source} />
+      <Layout>
+        <div className="my-16 px-8 md:px-0">
+          <h1 className="text-4xl mb-8 font-bold text-center text-blue-200 md:text-left">
+            {post.meta.title}
+          </h1>
+          <div className="prose prose-lg prose-invert max-w-none text-white prose-pre:p-0 prose-pre:mb-6 prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-img:w-full">
+            <MDXRemote {...post.source} />
+          </div>
+          <p className="italic font-light text-right text-gray-300 mt-8">
+            {post.meta.date}
+          </p>
+        </div>
+      </Layout>
     </>
   )
 }

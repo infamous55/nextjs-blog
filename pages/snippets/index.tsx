@@ -12,7 +12,7 @@ type Props = {
 const Snippets: NextPage<Props> = ({ allSnippets }) => {
   return (
     <Layout>
-      <div className="px-8 md:px-0" style={{ margin: '4rem 0' }}>
+      <div className="px-8 my-16 md:px-0">
         <h1 className="text-4xl mb-8 font-bold text-center md:text-left">
           Snippets
         </h1>
