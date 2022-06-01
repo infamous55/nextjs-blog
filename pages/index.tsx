@@ -1,14 +1,12 @@
 import Link from 'next/link'
 import Layout from '../components/layout'
-import Image from 'next/image'
 import PostCard from '../components/postCard'
 import { getAllPosts } from '../lib/api'
 
 import type { NextPage } from 'next'
 import type Post from '../types/post'
 
-import profile from '../public/profile.svg'
-// import arrow from '../public/arrow.svg'
+import Profile from '../public/profile.svg'
 
 type Props = {
   posts: Post[]
@@ -29,7 +27,7 @@ const Home: NextPage<Props> = ({ posts }) => {
           </p>
         </div>
         <div className="hidden	md:block">
-          <Image src={profile} width={160} height={160}></Image>
+          <Profile />
         </div>
       </section>
       <section className="px-8 md:px-0">
@@ -51,8 +49,6 @@ const Home: NextPage<Props> = ({ posts }) => {
         <Link href="/snippets">
           <a className="text-gray-300 hover:text-white">
             See all snippets <span className="font-bold text-xl">&#8594;</span>
-            {/* <Image src={arrow} width={24} height={10}></Image> */}
-            {/* <Arrow /> */}
           </a>
         </Link>
       </section>

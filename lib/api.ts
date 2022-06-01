@@ -57,6 +57,7 @@ export function getSnippetBySlug(slug: string): Snippet {
     slug,
     title: data.title ?? 'Untitled',
     excerpt: data.excerpt ?? '',
+    image: data.image ?? 'default.png',
   }
 }
 

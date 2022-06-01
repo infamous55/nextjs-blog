@@ -8,7 +8,7 @@ import Head from 'next/head'
 import Layout from '../../components/layout'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
-import 'highlight.js/styles/tokyo-night-dark.css'
+import 'highlight.js/styles/github-dark-dimmed.css'
 
 import type { NextPage, GetStaticProps, GetStaticPaths } from 'next'
 

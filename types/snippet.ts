@@ -3,6 +3,7 @@ type Snippet = {
   title: string
   excerpt: string
   content: string
+  image: string
 }
 
 export default Snippet

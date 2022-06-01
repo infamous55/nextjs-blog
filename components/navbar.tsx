@@ -1,6 +1,9 @@
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
 
+import Twitter from '../public/twitter.svg'
+import Github from '../public/github.svg'
+
 const Navbar: FunctionComponent = () => {
   return (
     <nav className="flex justify-center items-center md:justify-between h-16 text-gray-300">
@@ -21,7 +24,18 @@ const Navbar: FunctionComponent = () => {
           </Link>
         </li>
       </ul>
-      {/* icons */}
+      <ul className="md:flex list-none space-x-5 hidden">
+        <li>
+          <a href="https://www.twitter.com/infamous551" target={'_blank'}>
+            <Twitter />
+          </a>
+        </li>
+        <li>
+          <a href="https://www.github.com/infamous55" target={'_blank'}>
+            <Github />
+          </a>
+        </li>
+      </ul>
     </nav>
   )
 }
