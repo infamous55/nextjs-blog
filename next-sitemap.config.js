@@ -2,6 +2,9 @@
 const config = {
   siteUrl: process.env.SITE_URL || 'https://infamous55.com',
   generateRobotsTxt: true,
+  robotsTxtOptions: {
+    policies: [{ userAgent: '*', allow: '/' }],
+  },
 }
 
 export default config

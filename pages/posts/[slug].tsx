@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import Head from 'next/head'
 import Layout from '../../components/layout'
+import YouTube from '../../components/youTube'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import 'highlight.js/styles/github-dark-dimmed.css'
@@ -37,7 +38,7 @@ const PostPage: NextPage<{ post: MDXPost }> = ({ post }) => {
             {post.meta.title}
           </h1>
           <div className="prose prose-lg prose-invert max-w-none text-white prose-pre:p-0 prose-pre:mb-6 prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-img:w-full">
-            <MDXRemote {...post.source} />
+            <MDXRemote {...post.source} components={{ YouTube }} />
           </div>
           <p className="italic font-light text-right text-gray-300 mt-8">
             {post.meta.date}
