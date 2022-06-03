@@ -21,7 +21,7 @@ const Home: NextPage<Props> = ({ posts }) => {
             Hi, I&apos;m <span className="text-blue-200">infamous55!</span>
           </h3>
           <p className="text-gray-300">
-            I&apos;m a Full-Stack Developer and Cyber Security enthuziast, and
+            I&apos;m a Full-Stack Developer and Cyber Security enthusiast, and
             this is a blog I created for learning purposes. It contains some of
             my past writeups, plus some code snippets I&apos;ve written.
           </p>
