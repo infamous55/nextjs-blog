@@ -18,12 +18,12 @@ const Home: NextPage<Props> = ({ posts }) => {
       <section className="py-12 px-8 md:px-0 flex justify-center md:items-center md:justify-between">
         <div className="md:w-7/12 text-center md:text-left">
           <h3 className="text-4xl mb-4 font-bold">
-            Hi, I'm <span className="text-blue-200">infamous55!</span>
+            Hi, I&apos;m <span className="text-blue-200">infamous55!</span>
           </h3>
           <p className="text-gray-300">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed commodo
-            lorem eget egestas odio adipiscing ante mauris eget. Eu tincidunt
-            cursus fringilla ac.
+            I&apos;m a Full-Stack Developer and Cyber Security enthuziast, and
+            this is a blog I created for learning purposes. It contains some of
+            my past writeups, plus some code snippets I&apos;ve written.
           </p>
         </div>
         <div className="hidden	md:block">
@@ -41,10 +41,8 @@ const Home: NextPage<Props> = ({ posts }) => {
       <section className="py-12 px-8 md:px-0 text-center md:text-left">
         <h3 className="text-4xl mb-4 font-bold">Snippets</h3>
         <p className="text-gray-300 mb-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Feugiat morbi
-          tincidunt neque, nibh sed enim magna. Eu porttitor nec at massa. Ac et
-          amet consectetur imperdiet. Quam nulla elit arcu neque. Sit etiam eros
-          diam vel. Est et egestas ornare venenatis neque, diam.
+          This section is dedicated to short code pieces that I consider to be
+          useful.
         </p>
         <Link href="/snippets">
           <a className="text-gray-300 hover:text-white">

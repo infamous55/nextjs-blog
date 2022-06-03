@@ -1,0 +1,79 @@
+---
+title: '[TryHackMe] GLITCH - Official Writeup'
+excerpt: 'This is the official writeup for the GLITCH room on TryHackMe, it is the first challenge I created and also my first writeup, feedback is appreciated.'
+date: 5 Jan 2021
+---
+
+![cover](https://miro.medium.com/max/1400/1*-eEXLkpec7AGYZE7qkVIYw.jpeg)
+
+# Introduction
+
+This is the official writeup for the [GLITCH](https://tryhackme.com/room/glitch) room on TryHackMe, it is the first challenge I created and also my first writeup, feedback is appreciated. The box showcases a simple Node.js RCE, it’s meant to be beginner-oriented, although some basic JavaScript knowledge would be helpful.
+
+# Initial access
+
+After deploying the machine and performing a simple Nmap scan, we can see Nginx running on port 80.
+
+![image](https://miro.medium.com/max/1400/1*vfGHOY6jLlW5CnFNyGDQ4w.png)
+
+Accessing the website, there is not much going on. The only thing we find is a glitch image. Checking out the source code, a JavaScript function named **getAccess** is declared but never called. The function makes a GET request to _/api/access_ and logs the response to the console.
+
+![image](https://miro.medium.com/max/1126/1*FPj23Jz_PyO_5W7F7BbCtA.png)
+
+We can execute the function using the developer tools. It logs out an object with token propriety.
+
+![image](https://miro.medium.com/max/654/1*GiQUgHL4tz1Ld5q86hb6Vw.png)
+
+That string is BASE64 encoded. Let’s decode it with [CyberChef](https://gchq.github.io/CyberChef/).
+
+![image](https://miro.medium.com/max/1400/1*TzHKZOijChBgbX7h694Aqw.png)
+
+Now, taking a look at our cookies, a token with a default value is already set. Changing it to our value gives us access to the next page.
+
+![image](https://miro.medium.com/max/1000/1*BgNDiVz-4FrEip3Kag3cWg.png)
+
+# Path to RCE
+
+Inspecting the page, there is not much user interaction either, just a VHS aesthetic themed website with a few buttons, but we observe that the source code links to a JavaScript file.
+
+![image](https://miro.medium.com/max/1400/1*-OuiCxUMPTk54SA3_8fTpw.png)
+
+This code makes a GET request to _/api/items_ and displays a few boxes on the page, then adds a filtering functionality to it. Since the API is the only interesting thing here, we can try to play with it.
+
+Sending an unauthenticated GET request works.
+
+![image](https://miro.medium.com/max/1400/1*HwxHnIAhcvlmhswWuh-f_g.png)
+
+Let’s try sending a **POST** request instead.
+
+![image](https://miro.medium.com/max/1400/1*s9WH-tZonTFUgMAoyXXK2Q.png)
+
+It responds with the message: “there_is_a_glitch_in_the_matrix”. To investigate this endpoint further, let’s try fuzzing for parameters.
+
+We get a different response for **cmd**.
+
+![image](https://miro.medium.com/max/1400/1*Xj4Ymb-STyHVCZ8BEU0UdA.png)
+
+Reading through the error message, the application is trying to pass our argument to the eval function which evaluates JavaScript in Node.js.
+
+![image](https://miro.medium.com/max/1400/1*h3C90vS2TnKNAYNHqflINQ.png)
+
+Now we know that we got RCE on the box. Searching for ways to exploit it, the first Google result is [this medium post](https://medium.com/@sebnemK/node-js-rce-and-a-simple-reverse-shell-ctf-1b2de51c1a44). We can get a reverse shell using the exploit shown in the article.
+
+![image](https://miro.medium.com/max/1400/1*33ONGBP3jW1Gd3Hc2py9UQ.png)
+
+# Getting root
+
+If we list the files in our user’s home directory, we find a Firefox profile folder.
+
+With [firefox_decrypt](https://github.com/unode/firefox_decrypt) on our local attacker machine, the password for the user v0id is extracted.
+
+![image](https://miro.medium.com/max/1400/1*CAmaNmO-mTDsOKrt2TDmHQ.png)
+
+Enumerating further, there are no special privileges, no scripts, or left out binaries, the only interesting thing out there is **doas**, a less bloated sudo alternative. This allows us to execute commands as root.
+
+![image](https://miro.medium.com/max/1234/1*NYQWIMtAruBbCXGU0zln3w.png)
+
+# Conclusion
+
+This was an easy box centered around that POST parameter which leads to RCE. I intend to create other challenges too, not so straightforward. I thought the Node.js RCE would be a nice thing to bring in a beginner web challenge. Thank you for your time and have fun hacking!

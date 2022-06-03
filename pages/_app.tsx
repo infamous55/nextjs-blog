@@ -9,9 +9,10 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <Script
         strategy="lazyOnload"
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+        id="google-analytics"
       />
 
-      <Script strategy="lazyOnload">
+      <Script strategy="lazyOnload" id="my-tag">
         {`window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());

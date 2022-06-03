@@ -1,0 +1,18 @@
+---
+title: Prisma Client
+excerpt: Creating and exporting one Prisma Client.
+image: 'javascript.png'
+---
+
+# Description
+
+This is how you can create a Prisma Client in Node.js, and export it such that you have a single connection to the database.
+
+# Code
+
+```javascript
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
+
+module.exports = prisma
+```

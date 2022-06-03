@@ -9,7 +9,7 @@ type Props = {
 
 const PostCard: FunctionComponent<Props> = ({ post }) => {
   return (
-    <Link href="/posts/[slug]" as={`/posts/${post.slug}`}>
+    <Link href="/posts/[slug]" as={`/posts/${post.slug}`} passHref>
       <div
         className="p-8 rounded-lg mb-8 last:mb-0 cursor-pointer min-h-[11rem] flex flex-col justify-center"
         style={{ backgroundColor: '#22272E' }}

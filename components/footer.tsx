@@ -25,6 +25,7 @@ const Footer: FunctionComponent = () => {
             className="hover:text-white"
             href="https://www.twitter.com/infamous551"
             target={'_blank'}
+            rel="noreferrer"
           >
             Twitter
           </a>
@@ -34,6 +35,7 @@ const Footer: FunctionComponent = () => {
             className="hover:text-white"
             href="https://www.github.com/infamous55"
             target={'_blank'}
+            rel="noreferrer"
           >
             Github
           </a>

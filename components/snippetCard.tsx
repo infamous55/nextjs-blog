@@ -10,7 +10,7 @@ type Props = {
 
 const SnippetCard: FunctionComponent<Props> = ({ snippet }) => {
   return (
-    <Link href="/snippets/[slug]" as={`/snippets/${snippet.slug}`}>
+    <Link href="/snippets/[slug]" as={`/snippets/${snippet.slug}`} passHref>
       <div
         className="p-8 rounded-lg mb-8 last:mb-0 cursor-pointer min-h-[11rem] flex flex-col justify-center h-full"
         style={{ backgroundColor: '#22272E' }}
@@ -21,6 +21,7 @@ const SnippetCard: FunctionComponent<Props> = ({ snippet }) => {
           height={'32px'}
           layout="raw"
           className="w-8 h-8 mb-2 self-center md:self-start"
+          alt=""
         />
         <h3 className="text-blue-200 font-bold text-2xl mb-2 text-center md:text-left">
           {snippet.title}

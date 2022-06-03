@@ -26,12 +26,20 @@ const Navbar: FunctionComponent = () => {
       </ul>
       <ul className="md:flex list-none space-x-5 hidden">
         <li>
-          <a href="https://www.twitter.com/infamous551" target={'_blank'}>
+          <a
+            href="https://www.twitter.com/infamous551"
+            target={'_blank'}
+            rel="noreferrer"
+          >
             <Twitter />
           </a>
         </li>
         <li>
-          <a href="https://www.github.com/infamous55" target={'_blank'}>
+          <a
+            href="https://www.github.com/infamous55"
+            target={'_blank'}
+            rel="noreferrer"
+          >
             <Github />
           </a>
         </li>
